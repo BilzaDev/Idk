@@ -1,4 +1,16 @@
 if game.PlaceId == 155615604 then
+	game.StarterGui:SetCore("SendNotification", {
+	Title = "Thank you for using CatHub.";
+	Text = "loading Prison Life UI...";
+	Duration = 3;
+	})
+	wait(3)
+	game.StarterGui:SetCore("SendNotification", {
+	Title = "Loaded!";
+	Text = "The Prison Life UI has loaded!";
+	Duration = 1;
+	})
+	wait(5)
 	local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 	local Window = Library.CreateLib("Prison Life [BETA]", "Sentinel")
 	local Main = Window:NewTab("Main")
@@ -61,6 +73,14 @@ if game.PlaceId == 155615604 then
 	end
 
 
+	local function giveForcefield()
+		local character = game.Players.LocalPlayer.Character
+		if character then
+			local forceField = Instance.new("ForceField")
+			forceField.Visible = true
+			forceField.Parent = character
+		end
+	end
 
 
 	Section1:NewDropdown("Gun Giver", "Gives the selected gun", {"AK-47", "M9", "Remington-870"}, function(currentOption)
@@ -117,13 +137,7 @@ if game.PlaceId == 155615604 then
 
 	active = false
 	Section1:NewButton("GodMode", "GodMode", function()
-		if active == false then
-			while wait(0.01) do
-				game.Players.LocalPlayer.Character.Humanoid.Health = math.huge
-			end
-		else
-			print("Already activated!")
-		end
+		game.Players.LocalPlayer.Character.Humanoid.MaxHealth = math.huge
 	end)
 
 	--Player things
@@ -136,5 +150,11 @@ if game.PlaceId == 155615604 then
 	Section2:NewSlider("Jumppower", "Changes your jump power to a set amount.", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     	game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
 	end)
+else
+	game.StarterGui:SetCore("SendNotification", {
+	Title = "This game is not supported!";
+	Text = "This game is not supported with CatHub. Try another script!";
+	Duration = 3;
+	})
 
 end
