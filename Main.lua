@@ -90,6 +90,53 @@ if game.PlaceId == 155615604 then
 
 	local team = GetTeam()
 
+	function Teleport(Player, Position)
+		if Player == nil or Position == nil then return end
+		local savedcf = GetPos()
+		workspace.Remote.loadchar:InvokeServer()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = savedcf
+		workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.giver["M9"].ITEMPICKUP)
+		local CHAR = game.Players.LocalPlayer.Character
+		CHAR.Humanoid.Name = "1"
+		local c = CHAR["1"]:Clone()
+		c.Name = "Humanoid"
+		c.Parent = CHAR
+		CHAR["1"]:Destroy()
+		game.Workspace.CurrentCamera.CameraSubject = CHAR
+		CHAR.Animate.Disabled = true
+		wait()
+		CHAR.Animate.Disabled = false
+		CHAR.Humanoid.DisplayDistanceType = "None"
+		game.Players.LocalPlayer:FindFirstChild("Backpack"):FindFirstChild("M9").Parent = CHAR
+		local STOP = 0
+		repeat wait(.1)
+			STOP = STOP + 1
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 0.75)
+		until (not game.Players.LocalPlayer.Character:FindFirstChild("M9") or not game.Players.LocalPlayer.Character.HumanoidRootPart or not Player.Character.HumanoidRootPart or not game.Players.LocalPlayer.Character.HumanoidRootPart.Parent or not Player.Character.HumanoidRootPart.Parent or STOP > 500) and STOP > 3
+		local STOP_2 = 0
+		repeat wait()
+			STOP_2 = STOP_2 + 1
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Position
+		until STOP_2 > 10
+		workspace.Remote.loadchar:InvokeServer()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = savedcf
+	end
+
+	local function GetPlayer(String)
+		if not String then return end
+		local Yes = {}
+		for _, Player in ipairs(game.Players:GetPlayers()) do
+			if string.lower(Player.Name):match(string.lower(String)) or string.lower(Player.DisplayName):match(string.lower(String)) then
+				table.insert(Yes, Player)
+			end
+		end
+		if #Yes > 0 then
+			return Yes[1]
+		elseif #Yes < 1 then
+			return nil
+		end
+	end
+
 	function Arrest(Player, Time)
 		local Time = Time or 1
 		local savedcf = GetPos()
@@ -229,11 +276,47 @@ if game.PlaceId == 155615604 then
 		game.Workspace.Doors:Destroy()
 	end)
 
+	Section1:NewTextBox("Tp", "DestroyDoors", function(playername)
+		local Player = GetPlayer(playername)
+		if Player ~= nil then
+			Teleport(GetPlayer(playername), game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+		else
+			print("Player Not Found!")
+		end
+	end)
+
 	KillSection:NewButton("Kill All", "kill all", function ()
 	
 		for i,v in pairs(game.Players:GetPlayers()) do
 			if v ~= game.Players.LocalPlayer then
 				Kill(v)
+			end
+		end
+	end)
+
+	KillSection:NewButton("Kill All Cops", "kill all", function ()
+		for i,v in pairs(game.Players:GetPlayers()) do
+			if v ~= game.Players.LocalPlayer then
+				if v.TeamColor.Name == "Bright blue" then
+					Kill(v)
+				end
+			end
+		end
+	end)
+
+	KillSection:NewButton("Loop Kill All Cops", "kill all", function ()
+		States.LoopKill_Guards = true
+		while wait() do
+			if States.LoopKill_Guards then
+				for i,v in pairs(game.Teams.Guards:GetPlayers()) do
+					if v ~= game.Players.LocalPlayer then
+						pcall(function()
+							if v.Character.Humanoid.Health > 0 and v.Character.Head and v.Character and v ~= nil then
+								Kill(v)
+							end
+						end)
+					end
+				end
 			end
 		end
 	end)
