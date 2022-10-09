@@ -115,8 +115,15 @@ if game.PlaceId == 155615604 then
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-943.981506, 100.1523933, 2058.73462)
 	end)
 
+	active = false
 	Section1:NewButton("GodMode", "GodMode", function()
-		game.Players.LocalPlayer.Character.Humanoid.JumpPower = math.huge
+		if active == false then
+			while wait(0.01) do
+				game.Players.LocalPlayer.Character.Humanoid.Health = math.huge
+			end
+		else
+			print("Already activated!")
+		end
 	end)
 
 	--Player things
