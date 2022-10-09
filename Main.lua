@@ -115,6 +115,10 @@ if game.PlaceId == 155615604 then
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-943.981506, 100.1523933, 2058.73462)
 	end)
 
+	Section1:NewButton("GodMode", "GodMode", function()
+		game.Players.LocalPlayer.Character.Humanoid.JumpPower = math.huge
+	end)
+
 	--Player things
 	local Section2 = Playerlol:NewSection("Player")
 
